@@ -199,7 +199,8 @@ class «cls.name»(«cls.inheritedPythonClassNameHL»):
     //    File header
     //====================================================
     def pythonHeader(PogoDeviceClass cls) '''
-""" «cls.description.title»
+"""
+«cls.description.title»
 
 «cls.description.description»
 """

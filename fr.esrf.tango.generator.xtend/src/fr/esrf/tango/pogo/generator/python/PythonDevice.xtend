@@ -67,6 +67,7 @@ class PythonDevice implements IGenerator {
     def generate_pythonFile(PogoDeviceClass cls)'''
         «cls.pythonDevice»
 
+
         «cls.pythonDeviceClass»
 
         «cls.pythonMainMethod»
@@ -80,20 +81,20 @@ class PythonDevice implements IGenerator {
         
         class «cls.name» («cls.inheritedPythonClassName»):
             """«cls.description.description»"""
-            
+
             # -------- Add you global variables here --------------------------
             «cls.protectedArea("global_variables")»
         
             «cls.pythonConstructors»
-        
+
+            «cls.pythonDeleteDevice»
+
             «cls.pythonInitDevice»
         
             def always_executed_hook(self):
                 self.debug_stream("In always_excuted_hook()")
                 «cls.protectedArea("always_executed_hook")»
-        
-            «cls.pythonAttributes»
-        
+        «cls.pythonAttributes»
         
             «cls.pythonCommands»
 
@@ -107,13 +108,10 @@ class PythonDevice implements IGenerator {
         class «cls.name»Class(«cls.inheritedPythonDeviceClassName»):
             # -------- Add you global class variables here --------------------------
             «cls.protectedArea("global_class_variables")»
-        
-            «cls.pythonDynamicAttributesClass»
+        «cls.pythonDynamicAttributesClass»
         
         «cls.pythonProperties»
-        
         «cls.pythonCommandDefinitions»
-        
         «cls.pythonAttributeDefinitions»
         
     '''
@@ -133,9 +131,8 @@ class PythonDevice implements IGenerator {
         #
         #  File :        «cls.name + ".py"»
         #
-        #  Project :     «cls.description.title»
-        #
-        «cls.description.license.licenseText("# ")»
+        «projectTittle(cls)»
+        «cls.description.license.licenseText("#")»
         #
         #  $Author :      «cls.description.identification.author»$
         #
@@ -178,7 +175,12 @@ class PythonDevice implements IGenerator {
                 self.debug_stream("In __init__()")
                 «cls.name».init_device(self)
                 «cls.protectedArea("__init__")»
-                
+    '''
+
+    //====================================================
+    //    Delete device method
+    //====================================================
+    def pythonDeleteDevice(PogoDeviceClass cls)  '''
             def delete_device(self):
                 self.debug_stream("In delete_device()")
                 «cls.protectedArea("delete_device")»
@@ -208,25 +210,26 @@ class PythonDevice implements IGenerator {
     //    Attributes
     //====================================================
     def pythonAttributes(PogoDeviceClass cls)  '''
+    
         # -------------------------------------------------------------------------
         #    «cls.name» read/write attribute methods
         # -------------------------------------------------------------------------
-        
-            «FOR attr: cls.attributes»
-            «IF isTrue(attr.status.concreteHere)»
-            «IF attr.isRead»
+        «FOR attr: cls.attributes»
+        «IF isTrue(attr.status.concreteHere)»
+        «IF attr.isRead»
         «readAttributeMethod(cls, attr)»
-            «ENDIF»
-            «IF attr.isWrite»
-        «writeAttributeMethod(cls, attr)»
-            «ENDIF»
-            «IF !attr.readExcludedStates.empty || !attr.writeExcludedStates.empty»
-        «attributeMethodStateMachine(cls, attr)»
-            «ENDIF»
-            «ENDIF»
-        «ENDFOR»
 
-        «cls.pythonDynamicAttributes»
+        «ENDIF»
+        «IF attr.isWrite»
+        «writeAttributeMethod(cls, attr)»
+
+        «ENDIF»
+        «IF !attr.readExcludedStates.empty || !attr.writeExcludedStates.empty»
+        «attributeMethodStateMachine(cls, attr)»
+        «ENDIF»
+        «ENDIF»
+        «ENDFOR»
+    «cls.pythonDynamicAttributes»
         def read_attr_hardware(self, data):
             self.debug_stream("In read_attr_hardware()")
             «cls.protectedArea("read_attr_hardware")»
@@ -235,52 +238,56 @@ class PythonDevice implements IGenerator {
     //    Dynamic Attributes
     //====================================================
     def pythonDynamicAttributes(PogoDeviceClass cls)  '''
-            «FOR attr: cls.dynamicAttributes»
-            «IF isTrue(attr.status.concreteHere)»
-            «IF attr.isRead»
+    
+        «FOR attr: cls.dynamicAttributes»
+        «IF isTrue(attr.status.concreteHere)»
+        «IF attr.isRead»
         «readAttributeMethod(cls, attr)»
-            «ENDIF»
-            «IF attr.isWrite»
+
+        «ENDIF»
+        «IF attr.isWrite»
         «writeAttributeMethod(cls, attr)»
-            «ENDIF»
-            «IF !attr.readExcludedStates.empty || !attr.writeExcludedStates.empty»
+
+        «ENDIF»
+        «IF !attr.readExcludedStates.empty || !attr.writeExcludedStates.empty»
         «attributeMethodStateMachine(cls, attr)»
-            «ENDIF»
-            «ENDIF»
+        «ENDIF»
+        «ENDIF»
         «ENDFOR»
-        
+
         «IF !cls.dynamicAttributes.empty»
         def initialize_dynamic_attributes(self):
             self.debug_stream("In initialize_dynamic_attributes()")
-            
+
             #   Example to add dynamic attributes
             #   Copy inside the folowing protected area to instanciate at startup.
-            
+
             «FOR attr : cls.dynamicAttributes»
                 """   For Attribute «attr.name»
                 «attr.dynamicAttributeCreationExample»
                 «attr.dynamicAttributeSetMemorizedExample»
                 «cls.dynamicAttributeDefaultValueExample(attr)»"""
-                
+
             «ENDFOR»
             «cls.protectedArea("initialize_dynamic_attributes")»
         «ENDIF»
-                
+
     '''
 
     //====================================================
     //    Dynamic Attributes for class
     //====================================================
     def pythonDynamicAttributesClass(PogoDeviceClass cls)  '''
+    
         «IF !cls.dynamicAttributes.empty»
             def dyn_attr(self, dev_list):
                 """Invoked to create dynamic attributes for the given devices.
                 Default implementation calls
                 :meth:`«cls.name».initialize_dynamic_attributes` for each device
-            
+
                 :param dev_list: list of devices
                 :type dev_list: :class:`PyTango.DeviceImpl`"""
-            
+
                 for dev in dev_list:
                     try:
                         dev.initialize_dynamic_attributes()
@@ -298,7 +305,6 @@ class PythonDevice implements IGenerator {
         # -------------------------------------------------------------------------
         #    «cls.name» command methods
         # -------------------------------------------------------------------------
-        
             «FOR cmd: cls.commands»
             «IF isTrue(cmd.status.concreteHere)»
         «commandExecution(cls, cmd)»
@@ -321,7 +327,6 @@ class PythonDevice implements IGenerator {
                 «ENDFOR»
                 }
             «cls.inheritanceClassPropertyList»
-        
         
             #    Device Properties
             device_property_list = {
@@ -381,9 +386,10 @@ class PythonDevice implements IGenerator {
                 U.server_run()
         
             except PyTango.DevFailed as e:
-                print ('-------> Received a DevFailed exception:', e)
+                print('-------> Received a DevFailed exception:', e)
             except Exception as e:
-                print ('-------> An unforeseen exception occured....', e)
+                print('-------> An unforeseen exception occurred....', e)
+        
         
         if __name__ == '__main__':
             main()

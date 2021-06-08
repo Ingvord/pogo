@@ -76,7 +76,7 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 			"Include for the " + cls.name +" root class.\n"+
 			"This class is the singleton class for\n"+
 			" the " + cls.name + " device class.\n"+
-			"It contains all properties and methods which the \n" +
+			"It contains all properties and methods which the\n" +
 			cls.name + " requires only once e.g. the commands.",
 			 cls.description.title,
 			cls.description.license,
@@ -223,7 +223,7 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 		"//--------------------------------------------------------\n" +
 		"/**\n" +
 		" *	Method      : "+ cls.name + "::" + method + "()\n" +
-		" *	Description : " + description.comments(" *                ") + "\n" +
+		" " + generateMethodDescription(description.comments(" *                ")) +
 		" */\n" +
 		"//--------------------------------------------------------"
 	}
@@ -232,7 +232,7 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 		"//--------------------------------------------------------\n" +
 		"/*\n" +
 		" *	Method      : "+ cls.name + "::" + method + "()\n" +
-		" *	Description : " + description.comments(" *                ") + "\n" +
+		" " + generateMethodDescription(description.comments(" *                ")) +
 		" */\n" +
 		"//--------------------------------------------------------"
 	}
@@ -241,7 +241,7 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 		"//--------------------------------------------------------\n" +
 		"/**\n" +
 		" *	Method      : "+ cls.name + "Class::" + method + "()\n" +
-		" *	Description : " + description.comments(" *                ") + "\n" +
+		" " + generateMethodDescription(description.comments(" *                ")) +
 		" */\n" +
 		"//--------------------------------------------------------"
 	}
@@ -254,7 +254,7 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 		"//--------------------------------------------------------\n" +
 		"/**\n" +
 		" *	" + rw +" attribute " + attr.name + " related method\n" +
-		" *	Description: " + attr.properties.description.comments(" *               ") + "\n" +
+		" " + generateMethodDescription(attr.properties.description.comments(" *               ")) +
 		" *\n" +
 		" *	Data type:	" + attr.dataType.cppType + attr.manageEnumForMethodHeader + "\n" +
 		" *	Attr type:	" + attr.attType + attr.attTypeDimentions + "\n" + 
@@ -269,7 +269,7 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 		"//--------------------------------------------------------\n" +
 		"/**\n" +
 		" *	" + rw +" pipe " + pipe.name + " related method\n" +
-		" *	Description: " + pipe.description.comments(" *               ") + "\n" +
+		" " + generateMethodDescription(pipe.description.comments(" *               ")) +
 		" */\n"	+
 		"//--------------------------------------------------------\n"
 	}	
@@ -280,9 +280,9 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 	def attributePrototypeMethodHeader(Attribute attr) {
 		"/**\n" +
 		" *	Attribute " + attr.name + " related methods\n" +
-		" *	Description: " + attr.properties.description.comments(" *               ") + "\n" +
+		" " + generateMethodDescription(attr.properties.description.comments(" *               ")) +
 		" *\n" +
-		" *	Data type:	" + attr.dataType.cppType + "\n" +
+		" *	Data type:  " + attr.dataType.cppType + "\n" +
 		" *	Attr type:	" + attr.attType + attr.attTypeDimentions + "\n" + 
 		" */\n"		
 	}
@@ -294,9 +294,17 @@ class Headers extends fr.esrf.tango.pogo.generator.common.Headers{
 	def commandExecutionMethodHeader(Command cmd) {
 		"/**\n" +
 		" *	Command " + cmd.name + " related method\n" +
-		" *	Description: " + cmd.description.comments(" *               ") + "\n" +
+		" " + generateMethodDescription(cmd.description.comments(" *               ")) +
 		" *\n" + cmd.commandParameterHeader +
 		" */\n"		
 	}
+	
+	def generateMethodDescription(String desc) '''
+        «IF desc != ""»
+            * Description:  «desc»
+        «ELSE»
+            *
+        «ENDIF»
+	'''
 
 }

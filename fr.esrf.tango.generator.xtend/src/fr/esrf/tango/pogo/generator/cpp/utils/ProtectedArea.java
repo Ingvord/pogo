@@ -68,17 +68,17 @@ public class ProtectedArea {
 	//======================================================================
 	public String protectedArea(PogoDeviceClass cls, String method, String code, boolean comments) {
 		if (comments)
-			return	openProtectedArea(cls, method)+ "\n" +
-					"//	" + CppStringUtils.comments(code, "	//	") + "\n\n" +
+			return openProtectedArea(cls, method) +
+					"//	" + CppStringUtils.comments(code, "	//	") + "\n" +
 					closeProtectedArea(cls, method);
 		else
 			return	openProtectedArea(cls, method) +
-					code + "\n\n" +
+					code + "\n" +
 					closeProtectedArea(cls, method);
 	}
 	//======================================================================
 	public String protectedArea(PogoDeviceClass cls, String method) {
-		return	openProtectedArea(cls.getName(), method)+ "\n" +
+		return openProtectedArea(cls.getName(), method) +
 				closeProtectedArea(cls.getName(), method);
 	}
 	//======================================================================
@@ -94,18 +94,18 @@ public class ProtectedArea {
 	//======================================================================
 	public String protectedAreaClass(PogoDeviceClass cls, String method, String code, boolean comments) {
 		if (comments)
-			return	openProtectedArea(cls.getName()+"Class", method)+ "\n" +
-					"//	" + CppStringUtils.comments(code, "	//	") + "\n\n" +
-					closeProtectedArea(cls.getName()+"Class", method);
+			return openProtectedArea(cls.getName() + "Class", method) +
+					"//	" + CppStringUtils.comments(code, "	//	") + "\n" +
+					closeProtectedArea(cls.getName() + "Class", method);
 		else
 			return	openProtectedArea(cls.getName()+"Class", method) +
-					code + "\n\n" +
+					code + "\n" +
 					closeProtectedArea(cls.getName()+"Class", method);
 	}
 	//======================================================================
 	public String protectedAreaClass(PogoDeviceClass cls, String method) {
-		return	openProtectedArea(cls.getName()+"Class", method)+ "\n" +
-				closeProtectedArea(cls.getName()+"Class", method);
+		return openProtectedArea(cls.getName() + "Class", method) +
+				closeProtectedArea(cls.getName() + "Class", method);
 	}
 
 

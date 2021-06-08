@@ -89,7 +89,7 @@ class Main {
 				//----------------------------------------
 				Tango::Util *tg = Tango::Util::init(argc,argv);
 		
-				// Create the device server singleton 
+				// Create the device server singleton
 				//	which will create everything
 				//----------------------------------------
 				tg->server_init(false);
@@ -107,7 +107,7 @@ class Main {
 			catch (CORBA::Exception &e)
 			{
 				Tango::Except::print_exception(e);
-				
+		
 				std::cout << "Received a CORBA_Exception" << std::endl;
 				std::cout << "Exiting" << std::endl;
 			}

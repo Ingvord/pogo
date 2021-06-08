@@ -129,7 +129,6 @@ class Attributes {
 	//	Allocate attribute data members
 	//======================================================
 	def allocateAttributeDataMembers(EList<Attribute> attributes) '''
-
 		«FOR Attribute attribute : attributes»
 			«IF attribute.isConcreteHere»
 				«IF attribute.allocReadMember.isTrue»
@@ -201,7 +200,7 @@ class Attributes {
 				«attribute.name»Enum enum_val[w_length];
 				for (int i=0 ; i<w_length ; i++)  enum_val[i]=(«attribute.name»Enum) w_val[i];
 			«ENDIF»
-			«cls.protectedArea(attribute.writeAttrubuteMethod, "", false)»
+			«cls.protectedArea(attribute.writeAttrubuteMethod, "Add your own code", true)»
 		}
 	'''
 
@@ -267,13 +266,13 @@ class Attributes {
 	def Constructor(Attribute attribute, boolean dynamic) '''
 		«IF dynamic»
 			«IF attribute.isScalar»
-				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(), 
+				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(),
 						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType») {};
 			«ELSEIF attribute.isSpectrum»
-				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(), 
+				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(),
 						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.maxX») {};
 			«ELSE»
-				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(), 
+				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(),
 						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.maxX», «attribute.maxY») {};
 			«ENDIF»
 		«ELSE»
@@ -333,9 +332,8 @@ class Attributes {
 			«attribute.setEventProprty("archive_event_rel_change", attribute.evArchiveCriteria.relChange)»
 			«attribute.setEventProprty("archive_event_abs_change", attribute.evArchiveCriteria.absChange)»
 		«ENDIF»
-
 		«IF cls!==null»
-			«cls.protectedArea("att_" + attribute.name + "_dynamic_attribute", "", false)»
+			«cls.protectedArea("att_" + attribute.name + "_dynamic_attribute", "Add your own code", true)»
 		«ENDIF»
 		«attribute.manageEnumLabels»
 		«attribute.name.toLowerCase»->set_default_properties(«attribute.name.toLowerCase»_prop);

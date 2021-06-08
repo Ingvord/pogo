@@ -37,6 +37,8 @@ package fr.esrf.tango.pogo.generator.cpp.utils;
 
 import org.eclipse.emf.common.util.EList;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import fr.esrf.tango.pogo.generator.common.StringUtils;
 import fr.esrf.tango.pogo.pogoDsl.Command;
@@ -57,8 +59,8 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//	Dynamic attribute headers and signatures
 	//===========================================================
 	public String addDynamicAttributeHeaderComment(Attribute attribute) {
-		 String comment = " *  parameter attname: attribute name to be cretated and added.\n";
-		 if (isScalar(attribute) == false)
+		 String comment = " *  parameter attname: attribute name to be created and added.\n";
+		 if (!isScalar(attribute))
 			 comment += " *  parameter ptr:     memory buffer used to set attribute value.\n" +
 			            " *                     If NULL or not specified, buffer will be allocated.";
 		 return comment;
@@ -66,17 +68,17 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	public String removeDynamicAttributeHeaderComment(Attribute attribute) {
 		 String comment = " *  parameter attname: attribute name to be removed.\n";
-		 if (isScalar(attribute) == false)
+		 if (!isScalar(attribute))
 			 comment += " *  parameter free_it: memory buffer will be freed if true or not specified.";
 		 return comment;
 	}
 	//===========================================================
 	public String addDynamicAttributeSignature(PogoDeviceClass cls, Attribute attribute, boolean prototype) {
 		String	signature = "void ";
-		if (prototype==false)
+		if (!prototype)
 			signature += cls.getName() + "::";
 		signature += "add_" + attribute.getName() + "_dynamic_attribute(std::string attname";
-		if (isScalar(attribute) == false) {
+		if (!isScalar(attribute)) {
 			signature += ", " + strType(attribute) + " *ptr";
 			if (prototype)
 				signature += "=NULL";
@@ -89,10 +91,10 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	public String removeDynamicAttributeSignature(PogoDeviceClass cls, Attribute attribute, boolean prototype) {
 		String	signature = "void ";
-		if (prototype==false)
+		if (!prototype)
 			signature += cls.getName() + "::";
 		signature += "remove_" + attribute.getName() + "_dynamic_attribute(std::string attname";
-		if (isScalar(attribute) == false) {
+		if (!isScalar(attribute)) {
 			signature += ", bool free_it";
 			if (prototype)
 				signature += "=true";
@@ -107,7 +109,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//	Dynamic commands headers and signatures
 	//===========================================================
 	public String addDynamicCommandHeaderComment(Command command) {
-		 String comment = " *  parameter cmdname: command name to be cretated and added.\n"+
+		 String comment = " *  parameter cmdname: command name to be created and added.\n"+
 				 		  " *  parameter device:  Set this flag to true if the command must be added for only this device.\n";
 		 return comment;
 	}
@@ -119,7 +121,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	public String addDynamicCommandSignature(PogoDeviceClass cls, Command command, boolean prototype) {
 		String	signature = "void ";
-		if (prototype==false)
+		if (!prototype)
 			signature += cls.getName() + "::";
 		signature += "add_" + command.getName() + "_dynamic_command(std::string cmdname, bool device)";
 		if (prototype)
@@ -129,7 +131,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	public String removeDynamicCommandSignature(PogoDeviceClass cls, Command command, boolean prototype) {
 		String	signature = "void ";
-		if (prototype==false)
+		if (!prototype)
 			signature += cls.getName() + "::";
 		signature += "remove_" + command.getName() + "_dynamic_command(std::string cmdname)";
 		if (prototype)
@@ -146,7 +148,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	public static String statesTable(EList<State> states) {
 
 		//	Build a list of state columns to build the table
-		ArrayList<String[]>	list = new ArrayList<String[]>();
+		ArrayList<String[]>	list = new ArrayList<>();
 		list.add(new String[] { "================================================================" });
 		list.add(new String[] { "States", "Description" });
 		list.add(new String[] { "================================================================" });
@@ -164,7 +166,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 
 		InheritanceUtils	inher = new InheritanceUtils();
 		//	Build a list of command columns to build the table
-		ArrayList<String[]>	list = new ArrayList<String[]>();
+		ArrayList<String[]>	list = new ArrayList<>();
 		list.add(new String[] { "================================================================" });
 		list.add(new String[] { "  The following table gives the correspondence" });
 		list.add(new String[] { "  between command and method names." });
@@ -193,7 +195,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 		else
 			title += "is:";
 		//	Build a list of command columns to build the table
-		ArrayList<String[]>	list = new ArrayList<String[]>();
+		ArrayList<String[]>	list = new ArrayList<>();
 		list.add(new String[] { "================================================================" });
 		list.add(new String[] { title });
 		list.add(new String[] { "================================================================" });
@@ -201,7 +203,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 			//	Build description
 			String	desc = CppTypeDefinitions.cppType(attribute.getDataType()) + "	" +
 						attribute.getAttType();
-			if (attribute.getAttType().equals("Scalar")==false)
+			if (!attribute.getAttType().equals("Scalar"))
 				desc += "  (" + attTypeDimentions(attribute) + ")";
 
 			list.add(new String[] { attribute.getName(), desc });
@@ -212,24 +214,22 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	//===========================================================
 	private static String buildTable(ArrayList<String[]> list) {
-		StringBuffer	sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		//	Get the longest first element
-		int	length = 0;
+		int length = 0;
 		for (String[] array : list) {
-			if (array.length>1)
-				if (array[0].length()>length)
+			if (array.length > 1 && array[0].length() > length)
 					length = array[0].length();
 		}
-		String	emptyTab = "//  ";
-		for (int i=0 ; i<length ; i++)
-			emptyTab += " ";
-		
+		StringBuilder emptyTab = new StringBuilder("//  ");
+		for (int i = 0; i < length; i++)
+			emptyTab.append(" ");
+
 		for (String[] array : list) {
-			if (array.length>1) {
-				String	comments = comments(array[1], emptyTab+"  |  ");
+			if (array.length > 1) {
+				String comments = comments(array[1], emptyTab.append("  |  ").toString());
 				sb.append("//  ").append(buildTab(array[0], length)).append("  |  ").append(comments);
-			}
-			else
+			} else
 				sb.append("//").append(array[0]);
 			sb.append('\n');
 		}
@@ -238,11 +238,9 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 
 	//===========================================================
 	private static String buildTab(String str, int nbChar) {
-		StringBuffer	sb = new StringBuffer(str);
-		for (int i=str.length() ; i<nbChar ; i++) {
-			sb.append(' ');
-		}
-		return sb.toString();
+		return IntStream.range(str.length(), nbChar)
+				.mapToObj(i -> " ")
+				.collect(Collectors.joining("", str, ""));
 	}
 	//===========================================================
 	public static String readWithWrite(Attribute attribute) {
@@ -266,11 +264,11 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	public static String commandParameterHeader(Command command) {
 		String	str = "";
-		if (CppTypeDefinitions.cppType(command.getArgin().getType()).equals("void")==false) {
+		if (!CppTypeDefinitions.cppType(command.getArgin().getType()).equals("void")) {
 			str += " *	@param argin " +
 					StringUtils.comments(command.getArgin().getDescription(), " *               ") + "\n";
 		}
-		if (CppTypeDefinitions.cppType(command.getArgout().getType()).equals("void")==false) {
+		if (!CppTypeDefinitions.cppType(command.getArgout().getType()).equals("void")) {
 			str += " *	@returns " +
 					StringUtils.comments(command.getArgout().getDescription(), " *           ") + "\n";
 		}

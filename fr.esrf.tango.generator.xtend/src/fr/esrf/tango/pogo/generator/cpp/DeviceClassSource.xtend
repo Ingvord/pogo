@@ -324,7 +324,7 @@ class DeviceClassSource {
 			 * method : 		«cls.name»Class::create_static_attribute_list
 			 * description : 	Create the a list of static attributes
 			 *
-			 * @param	att_list	the ceated attribute list
+			 * @param	att_list	the created attribute list
 			 */
 			//--------------------------------------------------------
 			void «cls.name»Class::create_static_attribute_list(std::vector<Tango::Attr *> &att_list)
@@ -396,7 +396,7 @@ class DeviceClassSource {
 
 
 	//==========================================================
-	// Define singleton constructor, get_intance and init methods
+	// Define singleton constructor, get_instance and init methods
 	//==========================================================
 	def constructors(PogoDeviceClass cls) '''
 		//===================================================================

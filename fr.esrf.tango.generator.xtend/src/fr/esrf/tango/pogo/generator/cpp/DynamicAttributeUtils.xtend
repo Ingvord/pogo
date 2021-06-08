@@ -73,7 +73,7 @@ class DynamicAttributeUtils {
 
 
 		//============================================================
-		//	Tool methods to get pointer on attribute data buffer 
+		//	Tool methods to get pointer on attribute data buffer
 		//============================================================
 		«FOR Attribute attribute : cls.dynamicAttributes»
 			«cls.dynamicAttributeTools(attribute)»
@@ -147,9 +147,9 @@ class DynamicAttributeUtils {
 			«ELSE»
 			    map<std::string,«attribute.strType» *>::iterator ite;
 			«ENDIF»
-		    if ((ite=«attribute.name»_data.find(attname))!=«attribute.name»_data.end())
-		    {
-		    	«cls.protectedArea("remove_" + attribute.name + "_dynamic_attribute")»
+			if ((ite=«attribute.name»_data.find(attname))!=«attribute.name»_data.end())
+			{
+				«cls.protectedArea("remove_" + attribute.name + "_dynamic_attribute", "Add your own code", true)»
 				«IF attribute.attType.equals("Scalar")==false»
 					if (free_it)
 						delete[] ite->second;
@@ -173,19 +173,19 @@ class DynamicAttributeUtils {
 		«attribute.strType» *«cls.name»::get_«attribute.name»_data_ptr(std::string &name)
 		{
 			«IF attribute.isScalar»
-			    map<std::string,«attribute.strType»>::iterator ite;
+				map<std::string,«attribute.strType»>::iterator ite;
 			«ELSE»
-			    map<std::string,«attribute.strType» *>::iterator ite;
+				map<std::string,«attribute.strType» *>::iterator ite;
 			«ENDIF»
-		    if ((ite=«attribute.name»_data.find(name))==«attribute.name»_data.end())
-		    {
+			if ((ite=«attribute.name»_data.find(name))==«attribute.name»_data.end())
+			{
 				TangoSys_OMemStream	tms;
 				tms << "Dynamic attribute " << name << " has not been created";
 				Tango::Except::throw_exception(
 							(const char *)"ATTRIBUTE_NOT_FOUND",
 							tms.str().c_str(),
 							(const char *)"«cls.name»::get_«attribute.name»_data_ptr()");
-		    }
+			}
 			«IF attribute.isScalar»
 				return  &(ite->second);
 			«ELSE»

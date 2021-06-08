@@ -187,7 +187,7 @@ public class StringUtils {
 	 */
 	//===========================================================
 	public static String comments(String s, String tag) {
-		return s.replaceAll("\n", "\n"+tag);
+		return s.replace("\n", "\n" + tag);
 	}
 	//===========================================================
 	/**
@@ -500,7 +500,7 @@ public class StringUtils {
 			int start = 0;
 			int end;
 			while ((end=gpl.indexOf(str, start+str.length()))>0) {
-				sb.append(gpl.substring(start, end)).append("Lesser ");
+				sb.append(gpl, start, end).append("Lesser ");
 				start = end;
 			}
 			sb.append(gpl.substring(start));

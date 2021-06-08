@@ -53,9 +53,8 @@ class Headers {
 		"// file :        "+ fileName + "\n" +
 		"//\n" +
 		"// description : " + description.comments("//               ") + "\n" +
-		"//\n" +
-		"// project :     " + title + "\n" +
-		"//\n" + licenseText(license, "// ") +
+		"//\n" + projectHeader(title) +
+		"//\n" + licenseText(license, "//") +
 		"//\n" + getCopyrightCommented(copyright) +
 		"//\n" + 
 		"//=============================================================================\n" +
@@ -63,6 +62,17 @@ class Headers {
 		"//        (Program Obviously used to Generate tango Object)\n" +
 		"//=============================================================================\n"
 	}
+	
+	//======================================================
+	// Project header
+	//======================================================
+	def projectHeader(String title) '''
+	    «IF title != ""»
+	        // project :     «title»
+	    «ELSE»
+	        //
+	    «ENDIF»
+	'''
 
 	//======================================================
 	//	Makefile header

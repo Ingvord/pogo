@@ -125,12 +125,15 @@ class DeviceClassInclude {
 		class «cls.name»Class : public «cls.inheritedClassNameForDeviceClass»
 		#endif
 		{
-			«cls.protectedAreaClass("Additionnal DServer data members", "", false)»
+			«cls.protectedAreaClass("Additional DServer data members", "Add your own code", true)»
 
 			«cls.classPropertyDeclarations»
-			«cls.publicMethodPrototypes»
-			«cls.protectedMethodPrototypes»
-			«cls.privateMethodPrototypes»
+
+				«cls.publicMethodPrototypes»
+
+				«cls.protectedMethodPrototypes»
+
+				«cls.privateMethodPrototypes»
 		};
 		
 		}	//	End of namespace
@@ -219,7 +222,6 @@ class DeviceClassInclude {
 	// Define public methods prototypes
 	//======================================================
 	def publicMethodPrototypes(PogoDeviceClass cls) '''
-		
 			//	Method prototypes
 			static «cls.name»Class *init(const char *);
 			static «cls.name»Class *instance();
@@ -227,25 +229,23 @@ class DeviceClassInclude {
 			Tango::DbDatum	get_class_property(std::string &);
 			Tango::DbDatum	get_default_device_property(std::string &);
 			Tango::DbDatum	get_default_class_property(std::string &);
-		
 	'''
 	
 	//======================================================
 	// Define protected methods prototypes
 	//======================================================
 	def protectedMethodPrototypes(PogoDeviceClass cls) '''
-		protected:
-			«cls.name»Class(std::string &);
-			static «cls.name»Class *_instance;
-			void command_factory();
-			void attribute_factory(std::vector<Tango::Attr *> &);
-			void pipe_factory();
-			void write_class_property();
-			void set_default_property();
-			void get_class_property();
-			std::string get_cvstag();
-			std::string get_cvsroot();
-		
+			protected:
+				«cls.name»Class(std::string &);
+				static «cls.name»Class *_instance;
+				void command_factory();
+				void attribute_factory(std::vector<Tango::Attr *> &);
+				void pipe_factory();
+				void write_class_property();
+				void set_default_property();
+				void get_class_property();
+				std::string get_cvstag();
+				std::string get_cvsroot();
 	'''
 	
 	//======================================================

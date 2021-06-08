@@ -159,7 +159,7 @@ class DeviceSource {
 		{
 			DEBUG_STREAM << "«cls.name»::init_device() create device " << device_name << std::endl;
 			«cls.protectedArea("init_device_before", "Initialization before get_device_property() call", true)»
-			
+
 			«IF cls.hasInheritanceClass»
 				if (Tango::Util::instance()->is_svr_starting() == false  &&
 					Tango::Util::instance()->is_device_restarting(device_name)==false)
@@ -175,6 +175,7 @@ class DeviceSource {
 			«ELSE»
 				//	No device property to be read from database
 			«ENDIF»
+
 			«cls.attributes.allocateAttributeDataMembers»
 			«IF cls.deviceProperties.hasMandatoryProperty»
 				//	No longer if mandatory property not set. 
@@ -299,7 +300,7 @@ class DeviceSource {
 				«FOR Attribute attribute : cls.dynamicAttributes»
 					//	add_«attribute.name»_dynamic_attribute("My«attribute.name»Attribute");
 				«ENDFOR»
-				
+
 			«ENDIF»
 			«cls.protectedArea("add_dynamic_attributes", "Add your own code to create and add dynamic attributes if any", true)»
 		}
@@ -333,7 +334,7 @@ class DeviceSource {
 		{
 			«IF cls.dynamicCommands.size>0»
 				//	Example to add dynamic command:
-				//	Copy inside the folowing protected area to instanciate at startup.
+				//	Copy inside the following protected area to instantiate at startup.
 				«FOR Command command : cls.dynamicCommands»
 					//	add_«command.name»_dynamic_command("My«command.name»Command", true);
 				«ENDFOR»

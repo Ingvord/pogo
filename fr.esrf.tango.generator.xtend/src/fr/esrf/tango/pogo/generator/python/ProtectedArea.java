@@ -63,9 +63,9 @@ public class ProtectedArea {
 	 */
 	public String openProtectedArea(String className, String method) {
 		if (method.startsWith("."))	//	Not method, it is a file name
-			return "#----- PROTECTED REGION ID(" + className + method + ") ENABLED START -----#\n";
+			return "#----- PROTECTED REGION ID(" + className + method + ") ENABLED START -----#";
 		else
-			return "#----- PROTECTED REGION ID(" + className + "." + method + ") ENABLED START -----#\n";
+			return "#----- PROTECTED REGION ID(" + className + "." + method + ") ENABLED START -----#";
 	}
 	/**
 	 * CLose protected area
@@ -99,11 +99,11 @@ public class ProtectedArea {
 	public String protectedArea(PogoDeviceClass cls, String method, String code, boolean comments) {
 		if (comments)
 			return	openProtectedArea(cls, method)+ "\n" +
-					"#	" + StringUtils.comments(code, "	#	") + "\n\n" +
+					"#	" + StringUtils.comments(code, "	#	") + "\n" +
 					closeProtectedArea(cls, method);
 		else
 			return	openProtectedArea(cls, method) +
-					code + "\n\n" +
+					code + "\n" +
 					closeProtectedArea(cls, method);
 	}
 	/**
