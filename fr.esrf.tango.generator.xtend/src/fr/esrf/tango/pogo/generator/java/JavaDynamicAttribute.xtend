@@ -214,7 +214,7 @@ class JavaDynamicAttribute {
 		@Override
 		public AttributeValue getValue() throws DevFailed {
 			«attribute.strFullJavaType»	readValue;
-			«cls.protectedArea(attribute.name+"." + "getValue")»
+			«cls.protectedArea(attribute.name + "." + "getValue", "readValue = null;", false)»
 			return new AttributeValue(readValue);
 		}
 	'''

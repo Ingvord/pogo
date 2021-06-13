@@ -57,6 +57,10 @@ public class JavaUtils extends StringUtils {
 			return str;
 		return "";
 	}
+	
+	public static String getRelease() {
+		return System.getProperty("jtango.version", "RELEASE");
+	}
 	//===========================================================
 	/**
 	 * Returns the device class package name

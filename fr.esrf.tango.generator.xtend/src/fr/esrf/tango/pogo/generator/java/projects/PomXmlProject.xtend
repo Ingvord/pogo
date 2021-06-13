@@ -86,18 +86,11 @@ class IdeaProject  implements IGenerator {
 		        <tag>HEAD</tag>
 		    </scm>
 		
-		    <distributionManagement>
-		        <repository>
-		            <id>bintray-tango-controls</id>
-		            <url>https://api.bintray.com/maven/tango-controls/maven/${project.artifactId}/;publish=1</url>
-		        </repository>
-		    </distributionManagement>
-		
 		    <dependencies>
 		        <dependency>
-		            <groupId>org.tango</groupId>
+		            <groupId>org.tango-controls</groupId>
 		            <artifactId>JTangoServer</artifactId>
-		            <version>RELEASE</version>
+		            <version>«getRelease()»</version>
 		        </dependency>
 		    </dependencies>
 		
@@ -107,8 +100,8 @@ class IdeaProject  implements IGenerator {
 		                <groupId>org.apache.maven.plugins</groupId>
 		                <artifactId>maven-compiler-plugin</artifactId>
 		                <configuration>
-		                    <source>1.7</source>
-		                    <target>1.7</target>
+		                    <source>1.8</source>
+		                    <target>1.8</target>
 		                    <encoding>UTF-8</encoding>
 		                </configuration>
 		            </plugin>
@@ -137,14 +130,17 @@ class IdeaProject  implements IGenerator {
 		        </plugins>
 		    </build>
 		
+		    <!-- access to snapshot version of JTango  -->
 		    <repositories>
 		        <repository>
-		            <snapshots>
+		            <id>ossrh</id>
+		            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		            <releases>
 		                <enabled>false</enabled>
+		            </releases>
+		            <snapshots>
+		                <enabled>true</enabled>
 		            </snapshots>
-		            <id>bintray-tango-controls</id>
-		            <name>bintray</name>
-		            <url>http://dl.bintray.com/tango-controls/maven</url>
 		        </repository>
 		    </repositories>
 		</project>
