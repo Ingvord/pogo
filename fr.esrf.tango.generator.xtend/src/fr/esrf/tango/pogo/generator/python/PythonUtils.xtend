@@ -625,11 +625,11 @@ class PythonUtils {
     
     def String pythonAttributeSize(Attribute attr) {
         if (attr.image) {
-            return ", " + attr.maxX + ", " + attr.maxY;
+            return ", " + attr.name + "_X_DATA_SIZE" + ", " + attr.name + "_Y_DATA_SIZE";
         }
         else
         if (attr.spectrum) {
-            return ", " + attr.maxX;
+            return ", " + attr.name + "_X_DATA_SIZE";
         }
         else
             return "";
@@ -718,8 +718,16 @@ class PythonUtils {
             } ],
             «ELSE»],«ENDIF»
     '''
-    
-    
+    def pythonConstant(Attribute attr) '''
+        «IF attr.spectrum»
+            #    Constants for «attr.name» attribute
+            «attr.name»_X_DATA_SIZE = «attr.maxX»
+        «ELSEIF attr.image»
+            #    Constants for «attr.name» attribute
+            «attr.name»_X_DATA_SIZE = «attr.maxX»
+            «attr.name»_Y_DATA_SIZE = «attr.maxY»
+        «ENDIF»
+    '''
     def pythonAttributeClassHL(Attribute attr) '''
 «attr.name» = attribute(
         dtype=«attr.pythonTypeAttrHL»,

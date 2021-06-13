@@ -63,17 +63,32 @@ class Attributes {
 		"read_" + attribute.name
 	}
 	//======================================================
+	def readAttributesConstants(Attribute attribute) {
+		if (attribute.scalar) {
+			""
+		}
+		else
+		if (attribute.spectrum) {
+			"constexpr static long" + attribute.name + "Attrib::X_DATA_SIZE;"
+		}
+		else
+		if (attribute.image) {
+			"constexpr static long" + attribute.name + "Attrib::X_DATA_SIZE;\n" +
+			"constexpr static long" + attribute.name + "Attrib::Y_DATA_SIZE;"
+		}
+	}
+	//======================================================
 	def readAttrubuteSize(Attribute attribute) {
 		if (attribute.scalar) {
 			""
 		}
 		else
 		if (attribute.spectrum) {
-			", " + attribute.maxX
+			", " + attribute.name + "Attrib::X_DATA_SIZE"
 		}
 		else
 		if (attribute.image) {
-			", " + attribute.maxX +", " + attribute.maxY
+			", " + attribute.name +"Attrib::X_DATA_SIZE, " + attribute.name + "Attrib::Y_DATA_SIZE"
 		}
 	}
 	//======================================================
@@ -205,6 +220,19 @@ class Attributes {
 		}
 	'''
 
+	//======================================================
+	// Define constants for attributes
+	//======================================================
+	def attributeConstant(Attribute attribute) '''
+		«IF attribute.isSpectrum»
+			// Constants for «attribute.name» attribute
+			constexpr static long X_DATA_SIZE = «attribute.maxX»;
+		«ELSEIF attribute.isImage»
+			// Constants for «attribute.name» attribute
+			constexpr static long X_DATA_SIZE = «attribute.maxX»;
+			constexpr static long Y_DATA_SIZE = «attribute.maxY»;
+		«ENDIF»
+	'''
 
 	//======================================================
 	// Define attribute classes
@@ -214,6 +242,7 @@ class Attributes {
 		class «attribute.name»Attrib: public Tango::«attribute.inheritance»
 		{
 		public:
+			«attribute.attributeConstant»
 			«attribute.Constructor(dynamic)»
 			~«attribute.name»Attrib() {};
 			«IF attribute.isRead»
@@ -267,14 +296,14 @@ class Attributes {
 	def Constructor(Attribute attribute, boolean dynamic) '''
 		«IF dynamic»
 			«IF attribute.isScalar»
-				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(), 
+				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(),
 						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType») {};
 			«ELSEIF attribute.isSpectrum»
-				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(), 
-						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.maxX») {};
+				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(),
+						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.name»Attrib::X_DATA_SIZE) {};
 			«ELSE»
-				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(), 
-						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.maxX», «attribute.maxY») {};
+				«attribute.name»Attrib(const std::string &att_name):«attribute.inheritance»(att_name.c_str(),
+						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.name»Attrib::X_DATA_SIZE, «attribute.name»Attrib::Y_DATA_SIZE) {};
 			«ENDIF»
 		«ELSE»
 			«IF attribute.isScalar»
@@ -282,10 +311,10 @@ class Attributes {
 						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType»«attribute.readWithWrite») {};
 			«ELSEIF attribute.isSpectrum»
 				«attribute.name»Attrib():«attribute.inheritance»("«attribute.name»",
-						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.maxX») {};
+						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.name»Attrib::X_DATA_SIZE) {};
 			«ELSE»
 				«attribute.name»Attrib():«attribute.inheritance»("«attribute.name»",
-						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.maxX», «attribute.maxY») {};
+						«attribute.dataType.cppTypeEnum», Tango::«attribute.rwType», «attribute.name»Attrib::X_DATA_SIZE, «attribute.name»Attrib::Y_DATA_SIZE) {};
 			«ENDIF»
 		«ENDIF»
 	'''

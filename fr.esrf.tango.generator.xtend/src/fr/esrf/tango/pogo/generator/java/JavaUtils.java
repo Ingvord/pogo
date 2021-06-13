@@ -163,11 +163,11 @@ public class JavaUtils extends StringUtils {
 	public String allocation(Attribute attribute) {
 		if (attribute.getAttType().equals("Spectrum"))
 			return " = new " + strJavaType(attribute) + "[" +
-						attribute.getMaxX() + "]";
+						attribute.getName() + "_X_DATA_SIZE]";
 		else
 		if (attribute.getAttType().equals("Image"))
 			return " = new " + strJavaType(attribute) + "[" +
-						attribute.getMaxY() + "][" + attribute.getMaxX() + "]";
+						attribute.getName() + "_Y_DATA_SIZE][" + attribute.getName() + "_X_DATA_SIZE]";
 		else
 		if (attribute.getDataType().toString().contains("String"))
 			return " = \"\"";

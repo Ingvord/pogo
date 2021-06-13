@@ -63,7 +63,20 @@ class JavaAttribute {
 		«ENDFOR»
 	'''
 
-	
+	//======================================================
+	// define code to declare attributes
+	//======================================================
+	def attributeConstant(Attribute attribute) '''
+		«IF attribute.isSpectrum»
+			// Constants for «attribute.getName» attribute
+			private static final int «attribute.getName»_X_DATA_SIZE = «attribute.getMaxX»;
+		«ELSEIF attribute.isImage»
+			// Constants for «attribute.getName» attribute
+			private static final int «attribute.getName»_X_DATA_SIZE = «attribute.getMaxX»;
+			private static final int «attribute.getName»_Y_DATA_SIZE = «attribute.getMaxY»;
+		«ENDIF»
+	'''
+
 	//======================================================
 	// define code to declare attributes
 	//======================================================

@@ -109,6 +109,12 @@ class JavaDevice  implements IGenerator {
 			    protected static final Logger logger = LoggerFactory.getLogger(«cls.name».class);
 			    protected static final XLogger xlogger = XLoggerFactory.getXLogger(«cls.name».class);
 			«ENDIF»
+
+			//=========================================
+			// Define constants for attributes
+			//=========================================
+			«cls.attributeConstants»
+
 			//========================================================
 			//	Programmer's data members
 			//========================================================
@@ -233,6 +239,16 @@ class JavaDevice  implements IGenerator {
 				false)»
 	'''
 
+	//======================================================
+	// define constants for attributes
+	//======================================================
+	def attributeConstants(PogoDeviceClass cls) '''
+		«FOR Attribute attribute : cls.attributes»
+			«IF attribute.concreteHere»
+				«attribute.attributeConstant»
+			«ENDIF»
+		«ENDFOR»
+	'''
 
 	//======================================================
 	// define code for class properties

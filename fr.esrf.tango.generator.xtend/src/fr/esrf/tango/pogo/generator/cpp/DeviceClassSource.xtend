@@ -403,7 +403,12 @@ class DeviceClassSource {
 		//	Initialize pointer for singleton pattern
 		//===================================================================
 		«cls.name»Class *«cls.name»Class::_instance = NULL;
-		
+		//===================================================================
+		//	Class constants
+		//===================================================================
+		«FOR Attribute attribute : cls.attributes»
+			«attribute.readAttributesConstants»
+		«ENDFOR»
 		//--------------------------------------------------------
 		/**
 		 * method : 		«cls.name»Class::«cls.name»Class(std::string &s)

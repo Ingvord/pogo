@@ -107,9 +107,12 @@ class PythonDevice implements IGenerator {
         class «cls.name»Class(«cls.inheritedPythonDeviceClassName»):
             # -------- Add you global class variables here --------------------------
             «cls.protectedArea("global_class_variables")»
-        
+
+            «cls.pythonConstants»
+
             «cls.pythonDynamicAttributesClass»
-        
+
+
         «cls.pythonProperties»
         
         «cls.pythonCommandDefinitions»
@@ -308,6 +311,15 @@ class PythonDevice implements IGenerator {
             «ENDIF»
         «ENDFOR»
         '''
+    //====================================================
+    //    Attributes
+    //====================================================
+    def pythonConstants(PogoDeviceClass cls)'''
+            #    Attributes Constants
+            «FOR attr: cls.attributes»
+                «attr.pythonConstant»
+            «ENDFOR»
+    '''
     //====================================================
     //    Properties
     //====================================================
