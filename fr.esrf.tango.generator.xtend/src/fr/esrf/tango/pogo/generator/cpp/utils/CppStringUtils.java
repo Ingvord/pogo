@@ -289,7 +289,7 @@ public class CppStringUtils extends fr.esrf.tango.pogo.generator.common.StringUt
 	//===========================================================
 	public String buildEnum(Attribute attribute) {
 		if (strType(attribute).contains("DevEnum")) {
-			StringBuilder	sb = new StringBuilder("enum _" + attribute.getName() + "Enum {\n");
+			StringBuilder	sb = new StringBuilder("enum class _" + attribute.getName() + "Enum {\n");
 			for (String label : attribute.getEnumLabels()) {
 				sb.append("\t").append(label2enum(label)).append(",\n");
 			}

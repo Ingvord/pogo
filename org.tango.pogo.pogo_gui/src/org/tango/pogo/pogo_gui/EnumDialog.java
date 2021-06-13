@@ -98,12 +98,19 @@ public class EnumDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.ipadx = 10;
         for (int i=0 ; i<nbLines ; i++) {
+	    gbc.fill = GridBagConstraints.VERTICAL;
+	    gbc.anchor = GridBagConstraints.LINE_START;
+	    gbc.weightx = 0.;
             centerPanel.add(new JLabel("  " + i + "  "), gbc);
 
             JTextField  textField = new JTextField();
             textField.setColumns(40);
+	    textField.setMinimumSize(new Dimension(120, 20));
             gbc.gridx++;
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.weightx = 0.8;
             centerPanel.add(textField, gbc);
             textFields.add(textField);
             //	Add Action listener
