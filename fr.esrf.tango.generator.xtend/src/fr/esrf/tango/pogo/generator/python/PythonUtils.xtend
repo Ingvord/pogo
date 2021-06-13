@@ -334,7 +334,7 @@ class PythonUtils {
         
     def commandExecutionHL(PogoDeviceClass cls, Command cmd) '''
 «IF isTrue(cmd.status.concreteHere)»
-	«IF cmd.name != "State"»
+	«IF cmd.name != "State" && cmd.isDynamic=="false"»
 		«IF cmd.name != "Status"»    @command«IF cmd.hasCommandArg»(«ENDIF»
 		«IF !cmd.argin.type.voidType»        dtype_in=«cmd.argin.type.pythonTypeHL»,
 		«IF !cmd.argin.description.empty»        doc_in="«cmd.argin.description.commentMultiLinesInputDescriptionStr»",
@@ -794,6 +794,21 @@ class PythonUtils {
             «ENDIF»
         «ENDIF»
      «ENDFOR»
+    '''
+    //======================================================
+    /**
+    * Code to generate dynamic attribute example.
+    */
+    //======================================================
+    def dynamicCommandExample(Command cmd) '''
+        device_level = True
+        my«cmd.name» = tango.server.command(
+            f=self.«cmd.methodName»,
+            «IF !cmd.argin.type.voidType»dtype_in=«cmd.argin.type.pythonTypeHL»,«IF !cmd.argin.description.empty» doc_in="«cmd.argin.description.commentMultiLinesInputDescriptionStr»",«ENDIF»«ENDIF»
+            «IF !cmd.argout.type.voidType»dtype_out=«cmd.argout.type.pythonTypeHL», «IF !cmd.argout.description.empty»doc_out="«cmd.argout.description.commentMultiLinesInputDescriptionStr»",«ENDIF»«ENDIF»
+            «setAttrPropertyHL("display_level", cmd.displayLevel, false)» «setAttrPropertyHL("polling_period", cmd.polledPeriod, false)»
+        )
+        self.add_command(my«cmd.name», device_level)
     '''
     //======================================================
     /**

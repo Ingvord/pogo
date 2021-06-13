@@ -192,6 +192,8 @@ class «cls.name»(«cls.inheritedPythonClassNameHL»):
     # --------
 
 «ENDIF»
+«cls.pythonDynamicCommandsMethod»
+«cls.pythonDynamicCommands»
 «cls.pythonCommands»
     '''
 
@@ -280,6 +282,9 @@ def enumClasses(PogoDeviceClass cls) '''
         «ENDIF»
         «ENDFOR»
         «ENDIF»
+        «IF !cls.dynamicCommands.empty»
+        self.initialize_dynamic_commands()
+        «ENDIF»
         «cls.openProtectedAreaHL("init_device")»
         «cls.closeProtectedAreaHL("init_device")»
         «ENDIF»
@@ -332,6 +337,14 @@ def enumClasses(PogoDeviceClass cls) '''
     //====================================================
     //    Dynamic Attributes
     //====================================================
+    def pythonDynamicCommands(PogoDeviceClass cls)  '''
+    «FOR cmd: cls.dynamicCommands»
+        «commandExecutionHL(cls, cmd)»
+    «ENDFOR»
+    '''
+    //====================================================
+    //    Dynamic Attributes
+    //====================================================
     def pythonDynamicAttributes(PogoDeviceClass cls)  '''
 «FOR attr: cls.dynamicAttributes»«IF isTrue(attr.status.concreteHere)»
 «IF attr.isRead»    «readAttributeMethodHL(cls, attr, true)»«ENDIF»
@@ -358,6 +371,24 @@ def enumClasses(PogoDeviceClass cls) '''
 
         «ENDFOR»
 «ENDIF»
+'''
+    //====================================================
+    //    Dynamic Commands
+    //====================================================
+    def pythonDynamicCommandsMethod(PogoDeviceClass cls)  '''
+«IF !cls.dynamicCommands.empty»    def initialize_dynamic_commands(self):
+        self.debug_stream("In initialize_dynamic_commands()")
+        «IF cls.description.filestogenerate.toLowerCase.contains("protected regions")»
+        «openProtectedAreaHL(cls, "protected regions")»
+        """  Example how add new dynamic command (uncomment if needed)"""
+        «FOR command : cls.dynamicCommands»
+        """    For Command «command.name»
+        «command.dynamicCommandExample»"""
+        «ENDFOR»
+        «closeProtectedAreaHL(cls, "initialize_dynamic_commands")»
+        «ENDIF»
+«ENDIF»
+
 '''
     //====================================================
     //    Dynamic Attributes for class
